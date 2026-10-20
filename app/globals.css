@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
+@import "./theme.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+html { scroll-behavior: smooth; }
+/* Lenis smooth scrolling (see components/SmoothScroll.tsx) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+body { margin: 0; overscroll-behavior: none; font-family: var(--f-poppins), system-ui, sans-serif; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+.material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; user-select: none; }
+.material-symbols-outlined.fill { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24; }
+:focus-visible { outline: 3px solid rgb(var(--c-tertiary-fixed-dim, 249 174 46)); outline-offset: 2px; }
+
+/* Smoother image zooms (prevents sub-pixel jitter while scaling) */
+img { backface-visibility: hidden; }
+
+/* ---------- In-page text editing for admins (components/content/T.tsx) ---------- */
+[data-alf-edit] { outline: 1.5px dashed rgb(249 174 46 / 0.7); outline-offset: 2px; border-radius: 3px; cursor: text; transition: outline-color 0.15s, background-color 0.15s; }
+[data-alf-edit]:hover { background-color: rgb(249 174 46 / 0.15); }
+[data-alf-edit]:focus { outline: 2px solid #F9AE2E; background-color: rgb(249 174 46 / 0.2); }
+[data-alf-edit][data-dirty] { outline-style: solid; outline-color: #16a34a; }
+
+/* ---------- In-page photo replacement for admins (components/content/ImageOverlays.tsx) ---------- */
+.alf-img-box { outline: 1.5px dashed rgb(249 174 46 / 0.85); outline-offset: -3px; transition: outline-color 0.15s, background-color 0.15s; }
+.alf-img-box:hover { outline: 2px solid #F9AE2E; background-color: rgb(249 174 46 / 0.12); }
+.alf-img-box[data-staged] { outline-style: solid; outline-color: #16a34a; }
+
+/* ---------- First-visit loader (components/Loader.tsx) ---------- */
+html[data-alf-seen] .alf-loader { display: none; }
+.alf-loader { animation: alf-fallback-hide 0.6s ease 7s forwards; }
+@keyframes alf-fallback-hide { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+.alf-card { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: alf-card-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes alf-card-in { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+.alf-in { animation: alf-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes alf-fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.alf-pop { animation: alf-pop 0.8s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+@keyframes alf-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+.alf-ring { animation: alf-spin 1.6s linear infinite; }
+.alf-halo { opacity: 0.18; animation: alf-halo 2.4s ease-in-out infinite; }
+@keyframes alf-halo { 0%, 100% { transform: scale(0.92); opacity: 0.1; } 50% { transform: scale(1.08); opacity: 0.28; } }
+.alf-spin { animation: alf-spin 24s linear infinite; }
+@keyframes alf-spin { to { transform: rotate(360deg); } }
+.alf-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: alf-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+@keyframes alf-draw { to { stroke-dashoffset: 0; } }
+.alf-glow { animation: alf-drift 9s ease-in-out infinite alternate; }
+.alf-glow-2 { animation-duration: 11s; animation-direction: alternate-reverse; }
+@keyframes alf-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(40px, -30px, 0) scale(1.12); } }
+.alf-bar { width: 100%; transform-origin: left; transform: scaleX(0); animation: alf-progress 3.2s cubic-bezier(0.1, 0.7, 0.3, 1) 0.4s forwards; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.alf-bar.alf-bar-done { animation: none; transform: scaleX(1); }
+@keyframes alf-progress { to { transform: scaleX(0.88); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

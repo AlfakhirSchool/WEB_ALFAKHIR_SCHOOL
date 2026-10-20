@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Dashboard login account. Password stored as bcrypt hash.
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+/// Edited page text. `scope` = page/shell area (see components/content/Scope.tsx),
+/// `source` = the original text written in the code, `value` = replacement shown on the site.
+model TextOverride {
+  id        String   @id @default(cuid())
+  scope     String
+  source    String
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@unique([scope, source])
+}
+
+/// Structured site data edited through dashboard forms (contact, PPDB, fees, news, popup...).
+/// `value` is validated against content/settings.ts before use.
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+/// Uploaded image (popup ad, news). Stored in the database so it works on read-only hosts (Vercel).
+model Media {
+  id        String   @id @default(cuid())
+  name      String
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
+/// Student journal / scientific paper (PDF stored in the database like Media, so it works on Vercel).
+model Journal {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  /// e.g. "VIII-A"
+  className   String   @default("")
+  /// "SD" | "SMP"
+  jenjang     String
+  year        String   @default("")
+  abstract    String   @default("")
+  fileName    String
+  fileSize    Int
+  file        Bytes
+  /// Hidden journals are not shown on the public site.
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, createdAt])
+}
+
+/// Student master data for the auto-generated, NIS-locked PDF documents (profile + PPDB form) at /dokumen.
+model StudentRecord {
+  id            String   @id @default(cuid())
+  /// Student ID number: the public lookup key AND the PDF open-password.
+  nis           String   @unique
+  name          String
+  /// "SD" | "SMP"
+  jenjang       String
+  className     String
+  /// "Laki-laki" | "Perempuan"
+  gender        String
+  birthPlace    String
+  /// YYYY-MM-DD
+  birthDate     String
+  address       String
+  religion      String   @default("Islam")
+  /// /api/media/<id> URL (optional)
+  photo         String   @default("")
+  parentName    String
+  parentPhone   String
+  parentJob     String   @default("")
+  previousSchool String  @default("")
+  /// e.g. "2027/2028"
+  ppdbYear      String
+  ppdbWave      String
+  /// "Terdaftar" | "Diterima" | "Cadangan" | "Ditolak"
+  ppdbStatus    String
+  ppdbNotes     String   @default("")
+  achievement   String   @default("")
+  /// Public download allowed.
+  enabled       Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([jenjang, name])
+}
